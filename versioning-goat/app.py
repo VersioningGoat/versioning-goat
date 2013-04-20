@@ -20,6 +20,7 @@ from config import PROJECTS
 
 SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/download"
 REPOS_FOLDER = os.path.join(PROJECT_ROOT, 'repos')
+TMP_FOLDER = os.path.join(PROJECT_ROOT, 'tmp')
 
 
 app = Flask(__name__)
@@ -76,7 +77,7 @@ def process_ping():
             download_url = SOURCEFORGE_URL_FORMAT % (project['sourceforge_name'])
             response = retrieve_file(download_url)
 
-            Archive(response).extract(REPOS_FOLDER)
+            Archive(response).extract(os.path.join(TMP_FOLDER, project['github_name']))
 
             # TODO: initialize local repo if needed, commit and push
 

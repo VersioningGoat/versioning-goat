@@ -22,6 +22,7 @@ class Test(object):
 
 
 if __name__ == "__main__":
+    app.testing = True
     test = Test()
 
     print(test.receive_update_notification())
