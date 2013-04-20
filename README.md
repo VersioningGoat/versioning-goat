@@ -1,4 +1,4 @@
-![The Versioning Goat consumes boring static archives and excretes Git repositories.](https://raw.github.com/bregenspan/versioning-goat/master/logo.png)
+![The Versioning Goat consumes boring static archives and excretes Git repositories.](https://raw.github.com/VersioningGoat/versioning-goat/master/logo.png)
 
 
 The Versioning Goat
