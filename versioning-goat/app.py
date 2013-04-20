@@ -1,3 +1,14 @@
+"""
+Edward The Versioning Goat
+"""
+
+PROJECTS = {
+        'Sync, Archive, Validate, Exchange': {
+            'short_name': 'save-ha'
+         }
+}
+
+
 import os
 import sys
 
@@ -12,38 +23,12 @@ from StringIO import StringIO
 
 from credentials import GITHUB_TOKEN, GITHUB_USERNAME
 
-"""
-POSSIBLE INPUTS:
-
-* URL of static package.  We just assume this always refers to the latest version and pull
-    in periodically.  e.g. http://opensource.gsfc.nasa.gov/projects/DQSS/dqss_64.tar
-* Sourceforge file archive.  We get pinged re: when to update via their email notifications
-* Sourceforge repo (probably ignore this use case, NASA projects don't seem to use)
-* Third-party SVN
-
-Format for snapshot request URL:
-https://sourceforge.net/p/djangoajaxcl/code/1/tarball
-
-Format for (SVN) code snapshots:
-http://sourceforge.net/code-snapshots/svn/d/dj/djangoajaxcl/code/djangoajaxcl-code-2.tar.gz
-
-where 2 is revision name
-
-wget http://sourceforge.net/projects/phppgadmin/files/latest/download
-"""
-
 
 SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/download"
 REPOS_FOLDER = os.path.join(PROJECT_ROOT, '/repos')
 
 
 app = Flask(__name__)
-
-projects = {
-        'Sync, Archive, Validate, Exchange': {
-            'short_name': 'save-ha'
-         }
-}
 
 
 def setup_repos():
@@ -55,13 +40,13 @@ def setup_repos():
     current_repos = github.users(GITHUB_USERNAME).repos.get()
     repo_names = [x['name'] for x in current_repos]
 
-    for name, data in projects.iteritems():
+    for name, data in PROJECTS.iteritems():
         target_repo_name = 'nasa-%s' % (data['short_name'])
 
         if target_repo_name not in repo_names:
             github.user.repos.post(
                 name=target_repo_name,
-                description='Mirrored repository')
+                description='Mirrored repository')  # FIXME
 
 
 def retrieve_file(url):
@@ -92,7 +77,7 @@ def process_ping():
     http://sendgrid.com/docs/API_Reference/Webhooks/parse.html
     """
 
-    for projectname, data in projects.iteritems():
+    for projectname, data in PROJECTS.iteritems():
         if projectname in request.form['subject']:
             download_url = SOURCEFORGE_URL_FORMAT % (data['short_name'])
             response = retrieve_file(download_url)
@@ -104,5 +89,9 @@ def process_ping():
             break
 
 if __name__ == "__main__":
+
+    # Setup GitHub repos if needed
     setup_repos()
+
+    # Start listening for pings
     app.run()
