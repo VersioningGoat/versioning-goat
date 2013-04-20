@@ -20,7 +20,9 @@ from credentials import GITHUB_TOKEN, GITHUB_USERNAME
 from config import PROJECTS
 
 
-SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/download"
+SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/download"  # % project['sourceforge_name']
+GITHUB_REPO_URL_FORMAT = "https://github.com/%s/nasa-%s.git"  # % (GITHUB_USERNAME, project['github_name'])
+
 REPOS_FOLDER = os.path.join(PROJECT_ROOT, 'repos')
 TMP_FOLDER = os.path.join(PROJECT_ROOT, 'tmp')
 
@@ -86,6 +88,8 @@ def sync_sourceforge_to_repo(project):
         pass
     os.chdir(project_repo)
     os.system('git init')
+    os.system('git remote add origin ' +
+            GITHUB_REPO_URL_FORMAT % (GITHUB_USERNAME, project['github_name']))
     for item in os.listdir(project_repo):
         if item == '.git':
             continue
@@ -122,10 +126,13 @@ def sync_sourceforge_to_repo(project):
         results = subprocess.check_output("git commit -m '%s'" % commit_msg,
             stderr=subprocess.STDOUT,
             shell=True)
-        except subprocess.CalledProcessError:
-            # assume we were already up-to-date
-            return
-    print results
+    except subprocess.CalledProcessError:
+        # assume we were already up-to-date
+        pass
+    else:
+        print results
+
+    os.system("git push origin master")
 
 
 @app.route("/ping", methods=['POST'])

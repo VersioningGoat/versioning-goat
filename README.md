@@ -1,3 +1,6 @@
+![The Versioning Goat consumes boring static archives and excretes Git repositories.](https://raw.github.com/bregenspan/versioning-goat/master/logo.png)
+
+
 The Versioning Goat
 ====================
 
@@ -25,13 +28,21 @@ Setup
  * Set up MX records on the hostname you specified earlier, following the instructions at:
      http://sendgrid.com/docs/API_Reference/Webhooks/parse.html
  * copy credentials.example.py to credentials.py and fill out your GitHub credentials
- * ensure the list of projects to import in config.py is up-to-date
  * `pip install -r requirements.txt`
+
+
+
+Maintenance
+------------
+
+ * Ensure the list of projects to import in config.py is up-to-date
 
 
 Usage
 ------
 
+ * Make sure the user account you're running under has an SSH key generated and
+      added to your Github account (https://help.github.com/articles/generating-ssh-keys)
  * start server: `python app.py` -- (to listen for changes and sync on-change)
  * (TODO) `python app.py --sync-all` -- perform a one-time sync of all projects
 
