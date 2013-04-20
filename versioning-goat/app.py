@@ -2,19 +2,6 @@
 Edward The Versioning Goat
 """
 
-# Config: list projects here. The keys
-#   should match the project's full name,
-#   and contain values specifying the SourceForge
-#   project name and `short_name` of target repo
-PROJECTS = {
-        'Sync, Archive, Validate, Exchange': {
-            'sourceforge_name': 'save-ha',
-            'short_name': 'save-ha'
-         },
-}
-#TODO: separate config file for this
-# End config
-
 import os
 import sys
 
@@ -28,6 +15,7 @@ import requests
 from StringIO import StringIO
 
 from credentials import GITHUB_TOKEN, GITHUB_USERNAME
+from config import PROJECTS
 
 
 SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/download"
@@ -46,8 +34,8 @@ def setup_repos():
     current_repos = github.users(GITHUB_USERNAME).repos.get()
     repo_names = [x['name'] for x in current_repos]
 
-    for name, data in PROJECTS.iteritems():
-        target_repo_name = 'nasa-%s' % (data['short_name'])
+    for project in PROJECTS:
+        target_repo_name = 'nasa-%s' % (project['github_name'])
 
         if target_repo_name not in repo_names:
             github.user.repos.post(
@@ -83,15 +71,15 @@ def process_ping():
     http://sendgrid.com/docs/API_Reference/Webhooks/parse.html
     """
 
-    for projectname, data in PROJECTS.iteritems():
-        if projectname in request.form['subject']:
-            download_url = SOURCEFORGE_URL_FORMAT % (data['sourceforge_name'])
+    for project in PROJECTS:
+        if project['name'] in request.form['subject']:
+            download_url = SOURCEFORGE_URL_FORMAT % (project['sourceforge_name'])
             response = retrieve_file(download_url)
 
-            # extract to current dir
             Archive(response).extract(REPOS_FOLDER)
-            # TODO: extract response archive, add new remote and Github repo
-            #    if needed, push
+
+            # TODO: initialize local repo if needed, commit and push
+
             break
 
     return "Pong"
