@@ -1,8 +1,9 @@
 """
-Edward The Versioning Goat
+The Versioning Goat
 """
 
 import os
+import subprocess
 import sys
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -12,6 +13,7 @@ from archive import Archive
 from flask import Flask, request
 from github import GitHub
 import requests
+import shutil
 from StringIO import StringIO
 
 from credentials import GITHUB_TOKEN, GITHUB_USERNAME
@@ -64,6 +66,68 @@ def retrieve_file(url):
     return filelike
 
 
+def sync_sourceforge_to_repo(project):
+    download_url = SOURCEFORGE_URL_FORMAT % (project['sourceforge_name'])
+
+    response = retrieve_file(download_url)
+
+    tmp_folder = project_tmp = os.path.join(TMP_FOLDER, project['github_name'])
+    Archive(response).extract(tmp_folder)
+
+    # Remove everything in local repo except for .git folder, we'll
+    #   be replacing everything with archive contents and letting git
+    #   worry about tracking changes.
+    # TODO: solid sanity check needed here before we rmtree a bunch
+    #   of stuff...
+    project_repo = os.path.join(REPOS_FOLDER, project['github_name'])
+    try:
+        os.mkdir(project_repo)
+    except OSError:
+        pass
+    os.chdir(project_repo)
+    os.system('git init')
+    for item in os.listdir(project_repo):
+        if item == '.git':
+            continue
+        if os.path.isdir(item):
+            shutil.rmtree(item)
+        else:
+            os.remove(item)
+
+    # If we extracted a directory, copy out its contents,
+    #   we're not interested in the directory:
+    os.chdir(tmp_folder)
+    extracted_files = os.listdir(tmp_folder)
+    if len(extracted_files) == 1 and os.path.isdir(extracted_files[0]):
+        tmp_folder = os.path.join(tmp_folder, extracted_files[0])
+        os.chdir(tmp_folder)
+
+    for item in os.listdir(tmp_folder):
+        shutil.move(item, project_repo)
+
+    # We're done with the tmp folder, do cleanup
+    shutil.rmtree(project_tmp)
+
+    os.chdir(project_repo)
+
+    results = subprocess.check_output("git add *",
+        stderr=subprocess.STDOUT,
+        shell=True)
+    print results
+
+    commit_msg = "Automatic update from package"
+
+    # Time to commit any changes to git!
+    try:
+        results = subprocess.check_output("git commit -m '%s'" % commit_msg,
+            stderr=subprocess.STDOUT,
+            shell=True)
+        except subprocess.CalledProcessError:
+            # assume we were already up-to-date
+            return
+    print results
+
+
 @app.route("/ping", methods=['POST'])
 def process_ping():
     """ Process an inbound ping re: a repository being updated.
@@ -74,16 +138,11 @@ def process_ping():
 
     for project in PROJECTS:
         if project['name'] in request.form['subject']:
-            download_url = SOURCEFORGE_URL_FORMAT % (project['sourceforge_name'])
-            response = retrieve_file(download_url)
-
-            Archive(response).extract(os.path.join(TMP_FOLDER, project['github_name']))
-
-            # TODO: initialize local repo if needed, commit and push
-
+            sync_sourceforge_to_repo(project)
             break
 
     return "Pong"
+
 
 if __name__ == "__main__":
 
