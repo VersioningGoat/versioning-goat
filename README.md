@@ -55,3 +55,11 @@ Todos
  * Allow importing from other versioning systems, like SVN
   * Including Sourceforge SVN and Git, if many projects use them - seems like not.
  * Command for one-time sync of all projects
+
+
+Thanks
+-------
+
+ * To NASA for space and @sarahfathallah for taking time away from another Hackathon
+    project to pull together the quick logo (which depicts a goat eating archives
+    and excreting rainbows e.g. Git repos)
