@@ -5,6 +5,7 @@ The Versioning Goat
 import os
 import subprocess
 import sys
+import indicator
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(PROJECT_ROOT, '..', './lib'))
@@ -197,10 +198,15 @@ def process_ping():
     return "Pong"
 
 
+@app.route("/status", methods=['GET'])
+def get_image():
+    return indicator.get_image(request)
+
 if __name__ == "__main__":
 
     # Setup GitHub repos if needed
     setup_repos()
 
     # Start listening for pings
+    app.debug = True
     app.run()
