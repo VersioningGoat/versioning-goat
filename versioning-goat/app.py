@@ -1,5 +1,7 @@
 from flask import Flask, request
+import magic
 import re
+import requests
 
 """
 Format for snapshot request URL:
@@ -10,7 +12,6 @@ http://sourceforge.net/code-snapshots/svn/d/dj/djangoajaxcl/code/djangoajaxcl-co
 
 where 2 is revision name
 
-
 wget http://sourceforge.net/projects/phppgadmin/files/latest/download
 """
 
@@ -20,24 +21,32 @@ SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/downlo
 app = Flask(__name__)
 
 projects = {
-        'Polar Explorer': {
-            'short_name': 'djangoajaxcl'
+        'Sync, Archive, Validate, Exchange': {
+            'short_name': 'save-ha'
          }
 }
+
+
+def retrieve_archive(url):
+    response = requests.get(url)
+    return response.content
 
 
 @app.route("/ping", methods=['POST'])
 def process_ping():
     """ We've just been pinged that a repository has been updated.
 
-    Assume ping is always from Sendgrid and matches the format:
+    Assume ping matches format from Sendgrid:
     http://sendgrid.com/docs/API_Reference/Webhooks/parse.html
     """
 
-    for projectname in projects:
+    for projectname, data in projects.iteritems():
         if projectname in request.form['subject']:
-            project = projects[projectname]
-            download_url = SOURCEFORGE_URL_FORMAT % (project['short_name'])
+            download_url = SOURCEFORGE_URL_FORMAT % (data['short_name'])
+            response = retrieve_archive(download_url)
+            # TODO: extract response archive, add new remote and Github repo
+            #    if needed, push
+            break
 
 if __name__ == "__main__":
     app.run()
