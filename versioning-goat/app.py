@@ -45,16 +45,23 @@ projects = {
          }
 }
 
+
 def setup_repos():
-    """
+    """ Ensure we have a matching GitHub repo for every import project
     """
 
     github = GitHub(access_token=GITHUB_TOKEN, scope='user,repo')
 
+    current_repos = github.users(GITHUB_USERNAME).repos.get()
+    repo_names = [x['name'] for x in current_repos]
+
     for name, data in projects.iteritems():
-        github.user.repos.post(
-            name='nasa-%s' % (data['short_name']),
-            description='Mirrored repository')
+        target_repo_name = 'nasa-%s' % (data['short_name'])
+
+        if target_repo_name not in repo_names:
+            github.user.repos.post(
+                name=target_repo_name,
+                description='Mirrored repository')
 
 
 def retrieve_file(url):
@@ -97,4 +104,5 @@ def process_ping():
             break
 
 if __name__ == "__main__":
+    setup_repos()
     app.run()
