@@ -1,21 +1,27 @@
 from flask import send_file
-from random import choice
+# from random import choice
+import requests
 
 
 def get_image(request):
-    # TODO: Use actual hook instead of check_repo
-    if check_repo(request.args.get('repo')):
+    # Checks for repos with push enables (aka SourceForge)
+    if request.args.get('sync_method') == 'push':
+        filename = '../assets/images/ok.png'
+        return send_file(filename, mimetype='image/png')
+    # Checks for goat-loving static files
+    if up_to_date(request.args.get('repo_url'), request.args.get('etag')):
         filename = '../assets/images/ok.png'
     else:
         filename = '../assets/images/not_ok.png'
         # TODO: Trigger Goat Worker
+        # pass it request.args.get('name')
     return send_file(filename, mimetype='image/png')
 
 
 # Mocked response
-def check_repo(repo):
-    if repo == "true":
-        return True
-    elif repo == "false":
-        return False
-    return choice([True, False])
+def up_to_date(repo_url, etag):
+    if repo_url and etag:
+        new_etag = requests.head(repo_url, headers={"content-type": "text"}).headers['etag']
+        if etag == new_etag:
+            return True
+    return False
