@@ -2,12 +2,18 @@
 Edward The Versioning Goat
 """
 
+# Config: list projects here. The keys
+#   should match the project's full name,
+#   and contain values specifying the SourceForge
+#   project name and `short_name` of target repo
 PROJECTS = {
         'Sync, Archive, Validate, Exchange': {
+            'sourceforge_name': 'save-ha',
             'short_name': 'save-ha'
-         }
+         },
 }
-
+#TODO: separate config file for this
+# End config
 
 import os
 import sys
@@ -25,7 +31,7 @@ from credentials import GITHUB_TOKEN, GITHUB_USERNAME
 
 
 SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/download"
-REPOS_FOLDER = os.path.join(PROJECT_ROOT, '/repos')
+REPOS_FOLDER = os.path.join(PROJECT_ROOT, 'repos')
 
 
 app = Flask(__name__)
@@ -79,7 +85,7 @@ def process_ping():
 
     for projectname, data in PROJECTS.iteritems():
         if projectname in request.form['subject']:
-            download_url = SOURCEFORGE_URL_FORMAT % (data['short_name'])
+            download_url = SOURCEFORGE_URL_FORMAT % (data['sourceforge_name'])
             response = retrieve_file(download_url)
 
             # extract to current dir
@@ -87,6 +93,8 @@ def process_ping():
             # TODO: extract response archive, add new remote and Github repo
             #    if needed, push
             break
+
+    return "Pong"
 
 if __name__ == "__main__":
 
