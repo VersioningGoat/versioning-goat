@@ -9,8 +9,4 @@ GITHUB_SECRET = ''
 # Specify scope='user,repo' when instantiating GitHub()
 GITHUB_TOKEN = ''
 
-
-GITHUB_USERNAME = ''
-
-#TODO: handle organization, this will be ignored currently
-GITHUB_ORGANIZATION = False
+GITHUB_ORGANIZATION = "VersioningGoat"

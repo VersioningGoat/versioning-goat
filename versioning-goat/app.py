@@ -16,12 +16,15 @@ import requests
 import shutil
 from StringIO import StringIO
 
-from credentials import GITHUB_TOKEN, GITHUB_USERNAME
+from credentials import GITHUB_TOKEN, GITHUB_ORGANIZATION
 from config import PROJECTS
 
 
 SOURCEFORGE_URL_FORMAT = "http://sourceforge.net/projects/%s/files/latest/download"  # % project['sourceforge_name']
-GITHUB_REPO_URL_FORMAT = "https://github.com/%s/nasa-%s.git"  # % (GITHUB_USERNAME, project['github_name'])
+GITHUB_REPO_URL_FORMAT = "git@github.com:%s/%s.git"  # % (GITHUB_ORGANIZATION, project['github_name'])
+
+# Prefix we add to every repo we create and sync to:
+GITHUB_REPO_NAME_FORMAT = "nasa-%s"  # % project['github_name']"
 
 REPOS_FOLDER = os.path.join(PROJECT_ROOT, 'repos')
 TMP_FOLDER = os.path.join(PROJECT_ROOT, 'tmp')
@@ -36,14 +39,16 @@ def setup_repos():
 
     github = GitHub(access_token=GITHUB_TOKEN, scope='user,repo')
 
-    current_repos = github.users(GITHUB_USERNAME).repos.get()
+    #current_repos = github.users(GITHUB_USERNAME).repos.get()
+    current_repos = github.orgs(GITHUB_ORGANIZATION).repos.get()
+
     repo_names = [x['name'] for x in current_repos]
 
     for project in PROJECTS:
-        target_repo_name = 'nasa-%s' % (project['github_name'])
+        target_repo_name = GITHUB_REPO_NAME_FORMAT % (project['github_name'])
 
         if target_repo_name not in repo_names:
-            github.user.repos.post(
+            github.orgs(GITHUB_ORGANIZATION).repos.post(
                 name=target_repo_name,
                 description='Mirrored repository')  # FIXME
 
@@ -88,8 +93,9 @@ def sync_sourceforge_to_repo(project):
         pass
     os.chdir(project_repo)
     os.system('git init')
+    remote_name = GITHUB_REPO_NAME_FORMAT % project['github_name']
     os.system('git remote add origin ' +
-            GITHUB_REPO_URL_FORMAT % (GITHUB_USERNAME, project['github_name']))
+            GITHUB_REPO_URL_FORMAT % (GITHUB_ORGANIZATION, remote_name))
     for item in os.listdir(project_repo):
         if item == '.git':
             continue
@@ -132,7 +138,9 @@ def sync_sourceforge_to_repo(project):
     else:
         print results
 
-    os.system("git push origin master")
+    results = subprocess.check_output("git push origin master",
+            stderr=subprocess.STDOUT,
+            shell=True)
 
 
 @app.route("/ping", methods=['POST'])

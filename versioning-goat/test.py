@@ -25,7 +25,7 @@ if __name__ == "__main__":
     app.testing = True
     test = Test()
 
-    print(test.receive_update_notification())
-
     from app import setup_repos
     setup_repos()
+
+    print(test.receive_update_notification())
