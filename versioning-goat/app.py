@@ -49,10 +49,10 @@ def setup_repos():
     """
     """
 
-    github = GitHub(access_token=GITHUB_TOKEN)
+    github = GitHub(access_token=GITHUB_TOKEN, scope='user,repo')
 
     for name, data in projects.iteritems():
-        github.users(GITHUB_USERNAME).repos.post(
+        github.user.repos.post(
             name='nasa-%s' % (data['short_name']),
             description='Mirrored repository')
 
