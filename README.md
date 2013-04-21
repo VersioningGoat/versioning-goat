@@ -43,7 +43,7 @@ Usage
 
  * Make sure the user account you're running under has an SSH key generated and
       added to your Github account (https://help.github.com/articles/generating-ssh-keys)
- * start server: `python app.py` -- (to listen for changes and sync on-change)
+ * start server: `gunicorn -w 4 -b 127.0.0.1:8000 versioning-goat.app:app` -- (to listen for changes and sync on-change)
  * (TODO) `python app.py --sync-all` -- perform a one-time sync of all projects
 
 

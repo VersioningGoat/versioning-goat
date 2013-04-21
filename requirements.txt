@@ -2,3 +2,4 @@ Flask==0.9
 python-magic==0.4.3
 requests==1.2.0
 python-archive==0.2
+gunicorn==0.17.2
