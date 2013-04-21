@@ -61,7 +61,7 @@ Todos
     It's a bit complicated as a feature, so we should support a use case where updates are only
     called via cron.
  * Allow importing from other static file sources besides Sourceforge (this
-    requires running imports on a schedule/cron)
+    requires running imports on a schedule/cron) DONE
  * Allow importing from other versioning systems, like SVN
   * Including Sourceforge SVN and Git, if many projects use them - seems like not.
  * Command for one-time sync of all projects
@@ -71,6 +71,15 @@ Todos
   * Sourceforge static files
   * SVN
   * Git
+
+Sync Status Indicator
+---------------------
+
+ The Goat will inject a header to the repo's README which displays the sync status using the following images. It will trigger updates when necessary. 
+ 
+ ![Sync OK](https://raw.github.com/VersioningGoat/versioning-goat/dynamic_images/assets/images/goat_ok.png)
+ ![Sync OK](https://raw.github.com/VersioningGoat/versioning-goat/dynamic_images/assets/images/goat_work.png)
+ ![Sync OK](https://raw.github.com/VersioningGoat/versioning-goat/dynamic_images/assets/images/goat_error.png)
 
 Thanks
 -------
