@@ -10,3 +10,12 @@ GITHUB_SECRET = ''
 GITHUB_TOKEN = ''
 
 GITHUB_ORGANIZATION = "VersioningGoat"
+
+#  To enable error mails, set list of admin emails and SMTP
+#    server info here
+MAIL = {
+    'mailto': ['ludwig@example.com'],
+    'smtp_host': ('127.0.0.1', '587',),
+    'smtp_user': '',
+    'smtp_password': ''
+}

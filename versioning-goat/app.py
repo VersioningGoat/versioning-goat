@@ -16,7 +16,7 @@ import requests
 import shutil
 from StringIO import StringIO
 
-from credentials import GITHUB_TOKEN, GITHUB_ORGANIZATION
+from credentials import GITHUB_TOKEN, GITHUB_ORGANIZATION, MAIL
 from config import PROJECTS
 
 
@@ -31,6 +31,32 @@ TMP_FOLDER = os.path.join(PROJECT_ROOT, 'tmp')
 
 
 app = Flask(__name__)
+
+
+# Setup error logs via mail
+if (not app.debug and 'smtp_password' in MAIL
+        and MAIL['smtp_password'] is not None):
+    import logging
+    from logging import Formatter
+    from logging.handlers import SMTPHandler
+    mail_handler = SMTPHandler(MAIL['smtp_host'],
+                               'server-error@example.com',
+                               MAIL['mailto'], 'Versioning Goat Fail',
+                               (MAIL['smtp_user'], MAIL['smtp_password']),
+                               secure=True)
+    mail_handler.setLevel(logging.ERROR)
+    mail_handler.setFormatter(Formatter('''
+        Message type:       %(levelname)s
+        Location:           %(pathname)s:%(lineno)d
+        Module:             %(module)s
+        Function:           %(funcName)s
+        Time:               %(asctime)s
+
+        Message:
+
+        %(message)s
+    '''))
+    app.logger.addHandler(mail_handler)
 
 
 def setup_repos():
