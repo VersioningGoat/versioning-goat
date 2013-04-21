@@ -20,8 +20,12 @@ def get_image(request):
         filename = '../assets/images/goat_work.png'
         for project in PROJECTS:
             if project['url'] in repo_url:
-                # FIX-ME: Threading should allow one sync per repo, not one sync at a time!
-                if threading.active_count() == 1:
+                syncing = False
+                for control_thread in threading.enumerate():
+                    if control_thread.name == repo_url:
+                        syncing = True
+                        break
+                if syncing is False:
                     sync_thread = threading.Thread(group=None, target=app.sync_sourceforge_to_repo, name=repo_url, args=(project), kwargs={})
                     sync_thread.start()
                 break
