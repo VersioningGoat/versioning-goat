@@ -2,7 +2,8 @@ import glob
 import requests
 
 
-def write_std_readme(repo_url):
+def write_std_readme(project):
+    repo_url = project['url']
     # FIX-ME: This is bad, I'm setting etag that could not be the same as the local archive's version.
     etag = requests.head(repo_url, headers={"content-type": "text"}).headers['etag']
     sync_method = ''
