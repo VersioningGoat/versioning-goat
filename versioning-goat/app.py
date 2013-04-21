@@ -186,7 +186,7 @@ def process_ping():
     """
 
     import pprint
-    logging.debug(pprint.pformat(request.form))
+    app.logger.debug(pprint.pformat(request.form))
 
     for project in PROJECTS:
         if project['name'] in request.form['subject']:
