@@ -2,7 +2,7 @@ import glob
 import requests
 
 
-def write_std_readme(project):
+def write_std_readme(project, project_repo):
     repo_url = project['url']
     # FIX-ME: This is bad, I'm setting etag that could not be the same as the local archive's version.
     etag = requests.head(repo_url, headers={"content-type": "text"}).headers['etag']
@@ -13,10 +13,11 @@ def write_std_readme(project):
     header = "<hr>\n<img src='http://localhost:5000/status?repo_url=%s&etag=%s&sync_method=%s'> *this repository is automatically kept up to date by [the versioning goat](https://github.com/versioninggoat/versioning-goat).\n\nIt is officially maintained [here](%s).\n<hr>\n" % (repo_url, etag, sync_method, repo_url)
     # Either inject header or create full-blown readMe file.
     # TODO: add path to search for
-    if len(glob.glob('README*')) > 0:
-        filename = glob.glob('README*')[0]
+    # FIX-ME: this is pretty bad, what happens if you've got more than one README* file?
+    if len(glob.glob(project_repo + 'README*')) > 0:
+        filename = glob.glob(project_repo + 'README*')[0]
     else:
-        filename = 'README.md'
+        filename = project_repo + 'README.md'
     data = ''
     try:
         original = open(filename, 'r')
