@@ -52,6 +52,7 @@ stream_handler = logging.StreamHandler(sys.stdout)
 stream_handler.setFormatter(formatter)
 stream_handler.setLevel(logging.DEBUG)
 app.logger.addHandler(stream_handler)
+app.logger.setLevel(logging.DEBUG)
 
 if (not app.debug and 'smtp_password' in MAIL
         and MAIL['smtp_password'] is not None):
