@@ -2,24 +2,28 @@ from flask import send_file
 from config import PROJECTS
 import app
 import requests
+import threading
 
 
 def get_image(request):
     # FIX-ME: Should check if project has not changed repo_url before comparing eTags
     # Checks for repos with push enabled (aka SourceForge)
+    repo_url = request.args.get('repo_url')
     if request.args.get('sync_method') == 'push':
         filename = '../assets/images/goat_ok.png'
         return send_file(filename, mimetype='image/png', add_etags=False)
     # Checks for goat-loving static files
-    check = up_to_date(request.args.get('repo_url'), request.args.get('etag'))
+    check = up_to_date(repo_url, request.args.get('etag'))
     if check is True:
         filename = '../assets/images/goat_ok.png'
     elif check is False:
         filename = '../assets/images/goat_work.png'
         for project in PROJECTS:
-            if project['url'] in request.args.get('repo_url'):
-                # TODO: Thread this thing out!
-                app.sync_sourceforge_to_repo(project)
+            if project['url'] in repo_url:
+                # FIX-ME: Threading should allow one sync per repo, not one sync at a time!
+                if threading.active_count() == 1:
+                    sync_thread = threading.Thread(group=None, target=app.sync_sourceforge_to_repo, name=repo_url, args=(project), kwargs={})
+                    sync_thread.start()
                 break
     else:
         filename = '../assets/images/goat_error.png'
