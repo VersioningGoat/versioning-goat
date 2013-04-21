@@ -10,6 +10,11 @@ List projects here. Each should be a dictionary with the keys:
 
 PROJECTS = [
     {
+        'name': 'Django AJAX Changelist',
+        'sourceforge_name': 'djangoajaxcl',
+        'github_name': 'django-ajax-changelist'
+    },
+    {
         'name': 'Sync, Archive, Validate, Exchange',
         'sourceforge_name': 'save-ha',
         'github_name': 'save-ha',

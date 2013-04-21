@@ -113,6 +113,8 @@ def sync_sourceforge_to_repo(project):
         os.chdir(tmp_folder)
 
     for item in os.listdir(tmp_folder):
+        if item == '.git':
+            continue
         shutil.move(item, project_repo)
 
     # We're done with the tmp folder, do cleanup
@@ -129,7 +131,7 @@ def sync_sourceforge_to_repo(project):
 
     # Time to commit any changes to git!
     try:
-        results = subprocess.check_output("git commit -m '%s'" % commit_msg,
+        results = subprocess.check_output("git commit -am '%s'" % commit_msg,
             stderr=subprocess.STDOUT,
             shell=True)
     except subprocess.CalledProcessError:
