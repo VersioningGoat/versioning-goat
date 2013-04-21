@@ -9,12 +9,15 @@ def get_image(request):
         filename = '../assets/images/ok.png'
         return send_file(filename, mimetype='image/png')
     # Checks for goat-loving static files
-    if up_to_date(request.args.get('repo_url'), request.args.get('etag')):
+    check = up_to_date(request.args.get('repo_url'), request.args.get('etag'))
+    if check is True:
         filename = '../assets/images/ok.png'
-    else:
+    elif check is False:
         filename = '../assets/images/not_ok.png'
         # TODO: Trigger Goat Worker
         # pass it request.args.get('name')
+    else:
+        filename = '../assets/images/bad.png'
     return send_file(filename, mimetype='image/png')
 
 
@@ -24,4 +27,5 @@ def up_to_date(repo_url, etag):
         new_etag = requests.head(repo_url, headers={"content-type": "text"}).headers['etag']
         if etag == new_etag:
             return True
+    # TODO: return 'error' in case of exception
     return False
