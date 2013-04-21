@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 import indicator
+import std_readme
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(PROJECT_ROOT, '..', './lib'))
@@ -108,7 +109,13 @@ def retrieve_file(url):
 
 
 def sync_sourceforge_to_repo(project):
-    download_url = SOURCEFORGE_URL_FORMAT % (project['sourceforge_name'])
+    if project['sourceforge_name']:
+        project['url'] = SOURCEFORGE_URL_FORMAT % (project['sourceforge_name'])
+    sync_url_to_repo(project)
+
+
+def sync_url_to_repo(project):
+    download_url = project['url']
 
     response = retrieve_file(download_url)
 
@@ -155,6 +162,8 @@ def sync_sourceforge_to_repo(project):
     shutil.rmtree(project_tmp)
 
     os.chdir(project_repo)
+    # Inject the README stuff
+    std_readme.write_std_readme(project, project_repo)
 
     results = subprocess.check_output("git add *",
         stderr=subprocess.STDOUT,

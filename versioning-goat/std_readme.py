@@ -10,14 +10,18 @@ def write_std_readme(project, project_repo):
     # Check if sourceforge is source
     if repo_url[7:18] == 'sourceforge':
         sync_method = 'push'
-    header = "<img src='http://localhost:5000/status?repo_url=%s&etag=%s&sync_method=%s'>\n\nThis repository is automatically kept up to date by [the versioning goat](https://github.com/versioninggoat/versioning-goat). The original source is officially maintained [here](%s).\n<hr>\n" % (repo_url, etag, sync_method, repo_url)
+    header = "<img src='http://nasacodesync.org:8000/status?repo_url=%s&etag=%s&sync_method=%s'>\n\nThis repository is automatically kept up to date by [the versioning goat](https://github.com/versioninggoat/versioning-goat). The original source is officially maintained [here](%s).\n<hr>\n" % (repo_url, etag, sync_method, repo_url)
     # Either inject header or create full-blown readMe file.
     # FIX-ME: this is pretty bad, what happens if you've got more than one README* file?
-    if len(glob.glob(project_repo + 'README*')) > 0:
-        filename = glob.glob(project_repo + 'README*')[0]
+    print 'Project Repo: >>>>'
+    print project_repo
+    if len(glob.glob(project_repo + '/' + 'README*')) > 0:
+        filename = glob.glob(project_repo + '/' + 'README*')[0]
     else:
-        filename = project_repo + 'README.md'
+        filename = project_repo + '/' + 'README.md'
     data = ''
+    print 'FileName >>>'
+    print filename
     try:
         original = open(filename, 'r')
         data = original.read()

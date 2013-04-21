@@ -26,7 +26,7 @@ def get_image(request):
                         syncing = True
                         break
                 if syncing is False:
-                    sync_thread = threading.Thread(group=None, target=app.sync_sourceforge_to_repo, name=repo_url, args=(project), kwargs={})
+                    sync_thread = threading.Thread(group=None, target=app.sync_url_to_repo, name=repo_url, args=([project]), kwargs={})
                     sync_thread.start()
                 break
     else:
