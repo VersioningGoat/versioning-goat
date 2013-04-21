@@ -33,29 +33,35 @@ TMP_FOLDER = os.path.join(PROJECT_ROOT, 'tmp')
 app = Flask(__name__)
 
 
-# Setup error logs via mail
+# Set up logging
+import logging
+from logging import Formatter
+from logging.handlers import SMTPHandler
+formatter = Formatter('''
+    Message type:       %(levelname)s
+    Location:           %(pathname)s:%(lineno)d
+    Module:             %(module)s
+    Function:           %(funcName)s
+    Time:               %(asctime)s
+
+    Message:
+
+    %(message)s
+''')
+stream_handler = logging.StreamHandler(sys.stdout)
+stream_handler.setFormatter(formatter)
+stream_handler.setLevel(logging.DEBUG)
+app.logger.addHandler(stream_handler)
+
 if (not app.debug and 'smtp_password' in MAIL
         and MAIL['smtp_password'] is not None):
-    import logging
-    from logging import Formatter
-    from logging.handlers import SMTPHandler
     mail_handler = SMTPHandler(MAIL['smtp_host'],
-                               'server-error@example.com',
-                               MAIL['mailto'], 'Versioning Goat Fail',
-                               (MAIL['smtp_user'], MAIL['smtp_password']),
-                               secure=True)
+                           'server-error@example.com',
+                           MAIL['mailto'], 'Versioning Goat Fail',
+                           (MAIL['smtp_user'], MAIL['smtp_password']),
+                           secure=True)
     mail_handler.setLevel(logging.ERROR)
-    mail_handler.setFormatter(Formatter('''
-        Message type:       %(levelname)s
-        Location:           %(pathname)s:%(lineno)d
-        Module:             %(module)s
-        Function:           %(funcName)s
-        Time:               %(asctime)s
-
-        Message:
-
-        %(message)s
-    '''))
+    mail_handler.setFormatter(formatter)
     app.logger.addHandler(mail_handler)
 
 
@@ -178,6 +184,9 @@ def process_ping():
     Assume ping matches format from Sendgrid:
     http://sendgrid.com/docs/API_Reference/Webhooks/parse.html
     """
+
+    import pprint
+    logging.debug(pprint.pformat(request.form))
 
     for project in PROJECTS:
         if project['name'] in request.form['subject']:
