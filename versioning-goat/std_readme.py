@@ -10,7 +10,7 @@ def write_std_readme(project, project_repo):
     # Check if sourceforge is source
     if repo_url[7:18] == 'sourceforge':
         sync_method = 'push'
-    header = "<hr>\n<img src='http://localhost:5000/status?repo_url=%s&etag=%s&sync_method=%s'> *this repository is automatically kept up to date by [the versioning goat](https://github.com/versioninggoat/versioning-goat).\n\nIt is officially maintained [here](%s).\n<hr>\n" % (repo_url, etag, sync_method, repo_url)
+    header = "<img src='http://localhost:5000/status?repo_url=%s&etag=%s&sync_method=%s'>\n\nThis repository is automatically kept up to date by [the versioning goat](https://github.com/versioninggoat/versioning-goat). The original source is officially maintained [here](%s).\n<hr>\n" % (repo_url, etag, sync_method, repo_url)
     # Either inject header or create full-blown readMe file.
     # TODO: add path to search for
     # FIX-ME: this is pretty bad, what happens if you've got more than one README* file?
@@ -30,5 +30,6 @@ def write_std_readme(project, project_repo):
     modified.write(header + data)
 
 # if __name__ == "__main__":
-#     from sys import argv
-#     write_std_readme(argv[1], argv[2], argv[3])
+#     from config import PROJECTS
+#     project = PROJECTS[0]
+#     write_std_readme(project, 'versioning-goat/repos/')
