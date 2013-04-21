@@ -1,8 +1,14 @@
 import glob
+import requests
 
 
-def write_std_readme(sync_method, repo_url, etag):
-    header = "<hr>\n<img src='http://localhost:5000/status?repo_url=%s&etag=%s&sync_method=%s'> *this repository is automatically kept up to date by [the versioning goat](https://github.com/versioninggoat/versioning-goat).\n\nIt is officially maintained [here](#).\n<hr>\n" % (repo_url, etag, sync_method)
+def write_std_readme(repo_url):
+    etag = requests.head(repo_url, headers={"content-type": "text"}).headers['etag']
+    sync_method = ''
+    # Check if sourceforge is source
+    if repo_url[7:18] == 'sourceforge':
+        sync_method = 'push'
+    header = "<hr>\n<img src='http://localhost:5000/status?repo_url=%s&etag=%s&sync_method=%s'> *this repository is automatically kept up to date by [the versioning goat](https://github.com/versioninggoat/versioning-goat).\n\nIt is officially maintained [here](%s).\n<hr>\n" % (repo_url, etag, sync_method, repo_url)
     # Either inject header or create full-blown readMe file.
     # TODO: add path to search for
     if len(glob.glob('README*')) > 0:

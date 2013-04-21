@@ -5,7 +5,8 @@ import requests
 
 
 def get_image(request):
-    # Checks for repos with push enables (aka SourceForge)
+    # FIX-ME: Should check if project has not changed repo_url before comparing eTags
+    # Checks for repos with push enabled (aka SourceForge)
     if request.args.get('sync_method') == 'push':
         filename = '../assets/images/goat_ok.png'
         return send_file(filename, mimetype='image/png', add_etags=False)
@@ -27,8 +28,10 @@ def get_image(request):
 
 def up_to_date(repo_url, etag):
     if repo_url and etag:
-        new_etag = requests.head(repo_url, headers={"content-type": "text"}).headers['etag']
-        if etag == new_etag:
-            return True
-    # TODO: return 'error' in case of exception
+        try:
+            new_etag = requests.head(repo_url, headers={"content-type": "text"}).headers['etag']
+            if etag == new_etag:
+                return True
+        except requests.RequestException:
+            return 'error'
     return False
