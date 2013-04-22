@@ -55,7 +55,12 @@ Todos
  * Allow importing from other versioning systems, like SVN
   * Including Sourceforge SVN and Git, if many projects use them - seems like not.
  * Command for one-time sync of all projects
-
+ * Evaluate if there's potential for merging with the other Space Apps Challenge projects that addressed this task
+ * OO refactor to clearly reflect the separate import engines:
+  * Static files
+  * Sourceforge static files
+  * SVN
+  * Git
 
 Thanks
 -------
