@@ -27,6 +27,8 @@ Setup
       Goat's "ping" handler. (e.g. http://www.nasacodesync.org/ping)
  * Set up MX records on the hostname you specified earlier, following the instructions at:
      http://sendgrid.com/docs/API_Reference/Webhooks/parse.html
+ * Subscribe an email address at the specified hostname to Sourceforge email updates
+     for the projects you're interested in.
  * copy credentials.example.py to credentials.py and fill out your GitHub credentials
  * `pip install -r requirements.txt`
 
@@ -50,6 +52,9 @@ Usage
 Todos
 ------
 
+ * Triggering via Sourceforge email update needs to be abstracted out and made optional.
+    It's a bit complicated as a feature, so we should support a use case where updates are only
+    called via cron.
  * Allow importing from other static file sources besides Sourceforge (this
     requires running imports on a schedule/cron)
  * Allow importing from other versioning systems, like SVN
