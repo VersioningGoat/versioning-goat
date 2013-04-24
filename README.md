@@ -4,8 +4,13 @@
 The Versioning Goat
 ====================
 
-This project seeks to address the NASA Space Apps challenge described here:
-http://spaceappschallenge.org/challenge/syncing-nasa-open-source-projects/
+**This project was built to address the NASA Space Apps challenge described here:
+http://spaceappschallenge.org/challenge/syncing-nasa-open-source-projects/**
+
+**It was a very exciting Hackathon to participate in.  A few other teams took on the
+same task and it looks like https://github.com/ryansb/spacehub ultimately offered
+the most complete and functional implementation, so I'd recommend checking that out
+if you're NASA or someone else looking at synchronizing a bunch of projects to GitHub.**
 
 Given a configuration listing the projects to sync (currently the only supported
 source to sync from is Sourceforge), The Versioning Goat retrieves the latest
