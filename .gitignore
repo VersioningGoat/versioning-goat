@@ -23,5 +23,7 @@ lib64
 # Installer logs
 pip-log.txt
 
-
+# local repos dir
 versioning-goat/repos/*/*
+
+.DS_Store
