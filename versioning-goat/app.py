@@ -108,6 +108,7 @@ def retrieve_file(url):
 
 def sync_sourceforge_to_repo(project):
     download_url = SOURCEFORGE_URL_FORMAT % (project['sourceforge_name'])
+
     response = retrieve_file(download_url)
 
     tmp_folder = project_tmp = os.path.join(TMP_FOLDER, project['github_name'])
