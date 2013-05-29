@@ -61,7 +61,7 @@ Todos
     It's a bit complicated as a feature, so we should support a use case where updates are only
     called via cron.
  * Allow importing from other static file sources besides Sourceforge (this
-    requires running imports on a schedule/cron) DONE
+    requires running imports on a schedule/cron)
  * Allow importing from other versioning systems, like SVN
   * Including Sourceforge SVN and Git, if many projects use them - seems like not.
  * Command for one-time sync of all projects
