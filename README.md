@@ -72,6 +72,15 @@ Todos
   * SVN
   * Git
 
+Sync Status Indicator
+---------------------
+
+ The Goat will inject a header to the repo's README which displays the sync status using the following images. It will trigger updates when necessary. 
+ 
+ ![Sync OK](https://raw.github.com/VersioningGoat/versioning-goat/dynamic_images/assets/images/goat_ok.png)
+ ![Sync OK](https://raw.github.com/VersioningGoat/versioning-goat/dynamic_images/assets/images/goat_work.png)
+ ![Sync OK](https://raw.github.com/VersioningGoat/versioning-goat/dynamic_images/assets/images/goat_error.png)
+
 Thanks
 -------
 
